@@ -1,0 +1,30 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.300-preview-015135
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+    - name: dotnet publish 
+      run: |
+        dotnet publish --configuration Release -o veloturg.ee
+    - name: Push code to Digital Ocean
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        port: ${{ secrets.REMOTE_PORT }}
+        password: ${{ secrets.PASSWORD }}
+        source: "veloturg.ee"
+        target: "/var/www/veloturg.ee"
+        rm: true
