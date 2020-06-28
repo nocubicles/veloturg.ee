@@ -1,0 +1,59 @@
+﻿@page "/kuulutus"
+@using Microsoft.AspNetCore.Authorization
+@using VeloturgWasm.Shared
+@inject HttpClient Http
+
+<AuthorizeView>
+    <Authorized Context="Auth">
+        <EditForm Model="@ad" OnInvalidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label>
+                    Pealkiri:
+                </label>
+                <InputText class="form-control" @bind-Value="ad.Title" />
+            </div>
+            <div class="form-group">
+                <label>
+                    Kirjeldus:
+                </label>
+                <InputTextArea class="form-control" @bind-Value="ad.Description" />
+            </div>
+            <div class="form-group">
+                <label>Ratta tüüp</label>
+                <InputSelect class="form-control" @bind-Value="ad.Type">
+                    <option value=""></option>
+                    @foreach (var type in bikeType.Types)
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="form-group">
+                <label>Raamisuurus</label>
+                <InputSelect class="form-control" @bind-Value="ad.FrameSize">
+                    <option value=""></option>
+                    @foreach (var size in frameSize.Sizes)
+                    {
+                        <option value="@size">@size</option>
+                    }
+                </InputSelect>
+            </div>
+        </EditForm>
+    </Authorized>
+    <NotAuthorized>
+        <h1>Kuulutuse lisamiseks pead sisse logima</h1>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private Ad ad = new Ad();
+    private BikeType bikeType = new BikeType();
+    private FrameSize frameSize = new FrameSize();
+
+    protected void HandleValidSubmit()
+    {
+        Console.WriteLine("ok");
+    }
+}
